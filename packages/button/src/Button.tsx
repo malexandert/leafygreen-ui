@@ -156,7 +156,6 @@ const buttonVariants: { readonly [K in Variant]: string } = {
 const buttonSizes: { readonly [K in Size]: string } = {
   [Size.XSmall]: css`
     height: 22px;
-    padding: 0 8px;
     font-size: 11px;
     text-transform: uppercase;
     font-weight: bold;
@@ -164,19 +163,34 @@ const buttonSizes: { readonly [K in Size]: string } = {
 
   [Size.Small]: css`
     height: 25px;
-    padding: 0 10px;
     font-size: 14px;
   `,
 
   [Size.Normal]: css`
     height: 32px;
-    padding: 0 12px;
     font-size: 14px;
   `,
 
   [Size.Large]: css`
     height: 45px;
     font-size: 16px;
+  `,
+};
+
+const padding: { readonly [K in Size]: string } = {
+  [Size.XSmall]: css`
+    padding: 0 8px;
+  `,
+
+  [Size.Small]: css`
+    padding: 0 10px;
+  `,
+
+  [Size.Normal]: css`
+    padding: 0 12px;
+  `,
+
+  [Size.Large]: css`
     padding: 0 20px;
   `,
 };
@@ -187,6 +201,8 @@ const baseStyle = css`
   // so that the z-index of the span within the button doesn't
   // appear above other elements on the page that it shouldn't.
   z-index: 0;
+  padding: 0;
+  margin: 0;
   border-radius: 3px;
   box-sizing: border-box;
   cursor: pointer;
@@ -319,14 +335,17 @@ export default function Button(props: ButtonProps) {
       {...commonProps}
     >
       <span
-        className={css`
-          // Usually for this to take effect, you would need the element to be
-          // "positioned". Due to an obscure part of CSS spec, flex children
-          // respect z-index without the position property being set.
-          //
-          // https://www.w3.org/TR/css-flexbox-1/#painting
-          z-index: 1;
-        `}
+        className={cx(
+          css`
+            // Usually for this to take effect, you would need the element to be
+            // "positioned". Due to an obscure part of CSS spec, flex children
+            // respect z-index without the position property being set.
+            //
+            // https://www.w3.org/TR/css-flexbox-1/#painting
+            z-index: 1;
+          `,
+          padding[size],
+        )}
       >
         {children}
       </span>

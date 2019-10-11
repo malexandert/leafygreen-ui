@@ -52,7 +52,7 @@ function useProcessedCodeSnippet(snippet: string): ProcessedCodeSnippet {
   }, [snippet]);
 }
 
-const whiteSpace = 12;
+const whiteSpace = 24;
 
 const codeWrapperStyle = css`
   overflow-x: auto;
@@ -63,7 +63,7 @@ const codeWrapperStyle = css`
 `;
 
 const codeWrapperStyleWithLineNumbers = css`
-  padding-left: ${whiteSpace * 3.5}px;
+  padding-left: ${whiteSpace * 1.75}px;
 `;
 
 const codeWrapperStyleWithWindowChrome = css`
@@ -80,7 +80,7 @@ function getWrapperVariantStyle(variant: Variant): string {
   `;
 }
 
-interface CodeProps extends SyntaxProps {
+export interface CodeProps extends SyntaxProps {
   /**
    * Shows line numbers in preformatted code blocks.
    *
@@ -214,5 +214,20 @@ Code.propTypes = {
   showWindowChrome: PropTypes.bool,
   chromeTitle: PropTypes.string,
 };
+
+export function getCodeProps(props: any) {
+  const codeProps = Object.keys(Code.propTypes);
+  return codeProps.reduce(
+    (acc, name) => {
+      if (name === 'children' || name === 'className') {
+        return acc;
+      }
+
+      acc[name] = props[name];
+      return acc;
+    },
+    {} as any,
+  );
+}
 
 export default Code;

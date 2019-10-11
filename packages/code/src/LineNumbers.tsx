@@ -8,8 +8,8 @@ const lineNumberStyles = css`
   top: 0;
   bottom: 0;
   left: 12px;
-  padding-top: 12px;
-  padding-bottom: 12px;
+  padding-top: 24px;
+  padding-bottom: 24px;
   font-size: 13px;
   line-height: 24px;
   user-select: none;
