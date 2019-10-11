@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
+import PropTypes from 'prop-types';
 import Clipboard from 'react-clipboard.js';
 import Code, { CodeProps, getCodeProps } from '@leafygreen-ui/code';
 import Button from '@leafygreen-ui/button';
 import Icon from '@leafygreen-ui/icon';
 import Popover from '@leafygreen-ui/popover';
+import { Language, Variant } from '@leafygreen-ui/syntax';
 import { uiColors } from '@leafygreen-ui/palette';
 import { css } from '@leafygreen-ui/emotion';
 import omit from 'lodash/omit';
@@ -58,11 +60,7 @@ interface CopyableProps extends CodeProps {
   withText?: boolean;
 }
 
-export default function Copyable({
-  children,
-  withText = true,
-  ...props
-}: CopyableProps) {
+function Copyable({ children, withText = true, ...props }: CopyableProps) {
   const [success, setSuccess] = useState(false);
 
   const onSuccess = () => {
@@ -108,3 +106,19 @@ export default function Copyable({
     </div>
   );
 }
+
+Copyable.displayName = 'Copyable';
+
+Copyable.propTypes = {
+  widthText: PropTypes.bool,
+  children: PropTypes.string.isRequired,
+  multiline: PropTypes.bool,
+  language: PropTypes.oneOf(Object.values(Language)),
+  variant: PropTypes.oneOf(Object.values(Variant)),
+  className: PropTypes.string,
+  showLineNumbers: PropTypes.bool,
+  showWindowChrome: PropTypes.bool,
+  chromeTitle: PropTypes.string,
+};
+
+export default Copyable;
