@@ -101,19 +101,3 @@ Applies a className to the root element's classList.
 Shows line numbers next to each line of code in the passed code snippet.
 
 **NOTE:** While you can set this to `true` regardless of the code component being multiline, the line numbers will not be displayed if the `multiline` prop is `true`.
-
-### showWindowChrome
-
-**Type:** `boolean`
-
-**Default:** `false`
-
-Shows a stylized window chrome frame around the code snippet. This is purely stylistic.
-
-### chromeTitle
-
-**Type:** `string`
-
-Shows a filename-like title in the window chrome frame.
-
-**NOTE:** While you can set this prop if `showWindowChrome` is `false`, it will not be displayed unless the `showWindowChrome` prop is `true`.
