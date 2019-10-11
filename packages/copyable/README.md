@@ -52,7 +52,7 @@ const ExampleComponent = () => <Copyable>{codeSnippet}</Copyable>;
 
 **Default:** `true`
 
-Determines if copy button will have `Copy` text or just an `Icon`
+Determines if Copy Button will have text or just an Icon.
 
 ### children **Required**
 
