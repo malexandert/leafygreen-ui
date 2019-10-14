@@ -1,5 +1,5 @@
-import Code, { CodeProps, getCodeProps } from './Code';
+import Code, { CodeProps } from './Code';
 
-export { CodeProps, getCodeProps };
+export { CodeProps };
 export { Variant, Language } from '@leafygreen-ui/syntax';
 export default Code;

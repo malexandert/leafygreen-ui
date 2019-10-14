@@ -14,7 +14,7 @@ console.log(greeting('World'));
 `;
 
 storiesOf('Code', module).add(
-  'Multiline',
+  'Default',
   () => {
     const margin = 50;
     const wrapperStyle = css`
@@ -27,10 +27,11 @@ storiesOf('Code', module).add(
         <Code
           showLineNumbers={boolean('Show line numbers', false)}
           showWindowChrome={boolean('Show window chrome', false)}
-          multiline={boolean('Multiline', true)}
           chromeTitle={text('Chrome label', 'directory/fileName.js')}
           variant={select('Variant', Object.values(Variant), Variant.Light)}
           language={select('Language', Object.values(Language), Language.Auto)}
+          copyable={boolean('copyable', true)}
+          withText={boolean('withText', true)}
         >
           {text('Code snippet', jsSnippet)}
         </Code>

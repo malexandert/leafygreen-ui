@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import PropTypes from 'prop-types';
 import { css, cx } from '@leafygreen-ui/emotion';
 import Syntax, {
@@ -9,6 +9,11 @@ import Syntax, {
 } from '@leafygreen-ui/syntax';
 import LineNumbers from './LineNumbers';
 import WindowChrome from './WindowChrome';
+import Clipboard from 'react-clipboard.js';
+import Button from '@leafygreen-ui/button';
+import Icon from '@leafygreen-ui/icon';
+import Popover from '@leafygreen-ui/popover';
+import { uiColors } from '@leafygreen-ui/palette';
 
 function stringFragmentIsBlank(str: string): str is '' | ' ' {
   return str === '' || str === ' ';
@@ -70,6 +75,45 @@ const codeWrapperStyleWithWindowChrome = css`
   border-left: 0;
 `;
 
+const buttonStyle = css`
+  position: absolute;
+  top: 0;
+  right: 0;
+`;
+
+const clipboardStyle = css`
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+`;
+
+const buttonTextStyle = css`
+  display: flex;
+  justify-content: center;
+`;
+
+const spanMargin = css`
+  margin-left: 2px;
+  margin-right: 2px;
+`;
+
+const successMessage = css`
+  font-size: 12px;
+  background-color: ${uiColors.gray.dark3};
+  color: ${uiColors.gray.light3};
+  padding: 8px 12px 8px 10px;
+  display: flex;
+  align-items: center;
+  line-height: 12px;
+  border-radius: 3px;
+  box-shadow: 0px 3px 2px -2px rgba(0, 0, 0, 0.3);
+`;
+
 function getWrapperVariantStyle(variant: Variant): string {
   const colors = variantColors[variant];
 
@@ -101,11 +145,18 @@ export interface CodeProps extends SyntaxProps {
   chromeTitle?: string;
 
   /**
-   * When true, whitespace and line breaks will be preserved.
+   * Determines if copyable button will appear next to code block.
    *
    * default: `true`
    * */
-  multiline?: boolean;
+  copyable?: boolean;
+
+  /**
+   * Determines if copyable button has text next to the copyable `Icon`.
+   *
+   * default: `true`
+   * */
+  withText?: boolean;
 }
 
 type DetailedElementProps<T> = React.DetailedHTMLProps<
@@ -116,7 +167,7 @@ type DetailedElementProps<T> = React.DetailedHTMLProps<
 /**
  * # Code
  *
- * React Component that outputs single-line and multi-line code blocks.
+ * React Component that outputs code blocks.
  *
  * ```
 <Code>Hello world!</Code>
@@ -124,34 +175,44 @@ type DetailedElementProps<T> = React.DetailedHTMLProps<
  * ---
  * @param props.children The string to be formatted.
  * @param props.className An additional CSS class added to the root element of Code.
- * @param props.multiline When true, whitespace and line breaks will be preserved. Default: `true`
  * @param props.lang The language used for syntax highlighing. Default: `auto`
  * @param props.variant Determines if the code block is rendered with a dark or light background. Default: 'light'
  * @param props.showLineNumbers When true, shows line numbers in preformatted code blocks. Default: `false`
+ * @param props.copyable Determines if copyable button will appear next to code block. Default: `true`
+ * @param props.withText Determines if copyable button has text next to the copyable `Icon`.
  */
 function Code({
   children = '',
   className,
-  multiline = true,
   language = Language.Auto,
   variant = Variant.Light,
   showLineNumbers = false,
   showWindowChrome = false,
   chromeTitle = '',
+  copyable = true,
+  withText = true,
   ...rest
 }: CodeProps) {
+  const [success, setSuccess] = useState(false);
+
+  const onSuccess = () => {
+    setSuccess(true);
+    setTimeout(() => setSuccess(false), 1500);
+  };
+
   const wrapperStyle = css`
     display: inline-block;
     border: 1px solid ${variantColors[variant][1]};
     border-radius: 4px;
     overflow: hidden;
+    position: relative;
   `;
 
   const wrapperClassName = cx(
     codeWrapperStyle,
     getWrapperVariantStyle(variant),
     {
-      [codeWrapperStyleWithLineNumbers]: multiline && showLineNumbers,
+      [codeWrapperStyleWithLineNumbers]: showLineNumbers,
       [codeWrapperStyleWithWindowChrome]: showWindowChrome,
     },
     className,
@@ -169,21 +230,6 @@ function Code({
     </Syntax>
   );
 
-  if (!multiline) {
-    return (
-      <div className={wrapperStyle}>
-        {renderedWindowChrome}
-
-        <div
-          {...(rest as DetailedElementProps<HTMLDivElement>)}
-          className={wrapperClassName}
-        >
-          {renderedSyntaxComponent}
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className={wrapperStyle}>
       {renderedWindowChrome}
@@ -198,6 +244,38 @@ function Code({
 
         {renderedSyntaxComponent}
       </pre>
+      {copyable && (
+        <Button className={buttonStyle} size="small">
+          <Clipboard
+            className={clipboardStyle}
+            data-clipboard-text={children}
+            onSuccess={onSuccess}
+            title="copy button"
+            component="span"
+          />
+          <div
+            className={buttonTextStyle}
+            aria-hidden="true"
+            role="presentation"
+          >
+            <Icon glyph="Copy" size="small" />
+            {withText && <span className={spanMargin}>Copy</span>}
+          </div>
+          <Popover active={success} align="top" justify="end">
+            <div className={successMessage}>
+              <Icon
+                glyph="CheckmarkWithCircle"
+                size="small"
+                className={css`
+                  margin-right: 0.35em;
+                `}
+                color={uiColors.green.base}
+              />
+              Copied
+            </div>
+          </Popover>
+        </Button>
+      )}
     </div>
   );
 }
@@ -206,28 +284,14 @@ Code.displayName = 'Code';
 
 Code.propTypes = {
   children: PropTypes.string.isRequired,
-  multiline: PropTypes.bool,
   language: PropTypes.oneOf(Object.values(Language)),
   variant: PropTypes.oneOf(Object.values(Variant)),
   className: PropTypes.string,
   showLineNumbers: PropTypes.bool,
   showWindowChrome: PropTypes.bool,
   chromeTitle: PropTypes.string,
+  copyable: PropTypes.bool,
+  withText: PropTypes.bool,
 };
-
-export function getCodeProps(props: any) {
-  const codeProps = Object.keys(Code.propTypes);
-  return codeProps.reduce(
-    (acc, name) => {
-      if (name === 'children' || name === 'className') {
-        return acc;
-      }
-
-      acc[name] = props[name];
-      return acc;
-    },
-    {} as any,
-  );
-}
 
 export default Code;

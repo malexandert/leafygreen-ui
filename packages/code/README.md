@@ -59,14 +59,6 @@ const SomeComponent = () => <Code>{codeSnippet}</Code>;
 
 This is the code snippet that will be rendered in the code block.
 
-### multiline
-
-**Type:** `boolean`
-
-**Default:** `true`
-
-This prop determines whether or not the code snippet will visually retain line breaks when rendered.
-
 ### lang
 
 **Type:** `'javascript'` | `'typescript'` | `'csp'` | `'cpp'` | `'go'` | `'java'` | `'perl'` | `'php'` | `'python'` | `'ruby'` | `'scala'` | `'bash'` | `'shell'` | `'sql'` | `'yaml'` | `'json'` | `'auto'` | `'none'`
@@ -98,8 +90,6 @@ Applies a className to the root element's classList.
 **Default:** `false`
 
 Shows line numbers next to each line of code in the passed code snippet.
-
-**NOTE:** While you can set this to `true` regardless of the code component being multiline, the line numbers will not be displayed if the `multiline` prop is `true`.
 
 ### showWindowChrome
 

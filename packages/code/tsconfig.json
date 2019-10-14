@@ -14,6 +14,15 @@
     },
     {
       "path": "../syntax"
+    },
+    {
+      "path": "../icon"
+    },
+    {
+      "path": "../button"
+    },
+    {
+      "path": "../popover"
     }
   ]
 }
